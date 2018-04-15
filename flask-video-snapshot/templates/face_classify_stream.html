@@ -1,0 +1,148 @@
+{% extends "layout.html" %} {% block body %}
+<script async src="static/opencv.js" onload="opencvIsReady();" type="text/javascript"></script>
+<script src="static/utils.js" type="tex/javascript"></script>
+<script>
+    var Module = {
+        preRun: [function () {
+            Module.FS_createPreloadedFile('/', 'haarcascade_eye.xml', "{{ url_for('static', filename='data/haarcascade_eye.xml') }}", true, false);
+            Module.FS_createPreloadedFile('/', 'haarcascade_frontalface_default.xml', "{{ url_for('static', filename='data/haarcascade_frontalface_alt.xml') }}", true, false);
+            Module.FS_createPreloadedFile('/', 'haarcascade_profileface.xml', 'https://raw.githubusercontent.com/opencv/opencv/master/data/haarcascades/haarcascade_profileface.xml', true, false);
+        }],
+        _main: function () { opencvIsReady(); }
+    };
+</script>
+<!---reference: https://www.html5rocks.com/en/tutorials/getusermedia/intro/ -->
+<div class='content-grid mdl-grid' justify-content='center'>
+    <div id='webcam' class="rectangle-card content-column mdl-card mdl-cell mdl-cell--3-col mdl-cell--2-col-tablet mdl-shadow--2dp">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text mdl-color-text--light-blue-900">Live Feed</h2>
+        </div>
+        <div class='mdl-card__media'>
+            <video id="screenshot-video" class="videostream" autoplay></video>
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+            <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" id="screenshot-button">Take screenshot</button>
+        </div>
+        <div class="mdl-card__supporting-text">
+            <canvas id='canvas-element' style="display:none;"></canvas>
+            <p id='status'></p>
+        </div>
+
+    </div>
+
+    <div id='output_screenshot' class="square-card content-column mdl-card mdl-cell mdl-cell--3-col mdl-cell--2-col-tablet mdl-shadow--2dp">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text mdl-color-text--light-blue-900">Screenshot</h2>
+        </div>
+        <div class='mdl-card__media'>
+            <img id="screenshot-img" src="">
+        </div>
+    </div>
+    <div id='output_processed' class="square-card content-column mdl-card mdl-cell mdl-cell--4-col mdl-cell--2-col-tablet mdl-shadow--2dp">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text mdl-color-text--light-blue-900">Processed</h2>
+        </div>
+        <div class='mdl-card__media'>
+            <canvas id="processed-img" src=""></canvas>
+
+        </div>
+
+    </div>
+
+
+    <script type="text/javascript" charset="utf-8">
+        ///set up video and controls///
+        $(document).ready(
+
+            (function () {
+                const button = document.querySelector('#screenshot-button');
+                const img = document.querySelector('#screenshot-img');
+                const video = document.querySelector('#screenshot-video');
+                const processed = document.querySelector('#processed-img');
+
+                const canvas = document.querySelector('#canvas-element');
+
+                var constraints = {
+                    video: true
+                };
+
+                button.onclick = video.onclick = function () {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0);
+                    // Other browsers will fall back to image/png
+                    img.src = canvas.toDataURL('image/png');
+                    console.log(canvas.toDataURL('image/png'));
+                    let dataURL = canvas.toDataURL('image/png');
+                    let src = cv.imread(canvas);
+                    console.log('image width: ' + src.cols + '\n' +
+                        'image height: ' + src.rows + '\n' +
+                        'image size: ' + src.size().width + '*' + src.size().height + '\n' +
+                        'image depth: ' + src.depth() + '\n' +
+                        'image channels ' + src.channels() + '\n' +
+                        'image type: ' + src.type() + '\n');
+                    let gray = new cv.Mat();
+                    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+                    ///cv.imshow(processed, gray);
+                    ///faceClassifier = new cv.CascadeClassifier();
+                    ///console.log(faceClassifier.load('haarcascade_frontalface_default.xml'));
+                    let faces = new cv.RectVector();
+                    let eyes = new cv.RectVector();
+                    let faceCascade = new cv.CascadeClassifier();
+                    let eyeCascade = new cv.CascadeClassifier();
+                    // load pre-trained classifiers
+                    const face_load = faceCascade.load('haarcascade_frontalface_default.xml');
+                    const eye_load = eyeCascade.load('haarcascade_eye.xml');
+                    console.log(face_load);
+                    // detect faces
+                    let msize = new cv.Size(0, 0);
+                    faceCascade.detectMultiScale(gray, faces, 1.05, 3, 0, msize, msize);
+                    for (let i = 0; i < faces.size(); ++i) {
+                        let roiGray = gray.roi(faces.get(i));
+                        let roiSrc = src.roi(faces.get(i));
+                        let point1 = new cv.Point(faces.get(i).x, faces.get(i).y);
+                        let point2 = new cv.Point(faces.get(i).x + faces.get(i).width,
+                            faces.get(i).y + faces.get(i).height);
+                        cv.rectangle(src, point1, point2, [255, 0, 0, 255]);
+                        // detect eyes in face ROI
+                        eyeCascade.detectMultiScale(roiGray, eyes);
+                        for (let j = 0; j < eyes.size(); ++j) {
+                            let point1 = new cv.Point(eyes.get(j).x, eyes.get(j).y);
+                            let point2 = new cv.Point(eyes.get(j).x + eyes.get(j).width,
+                                eyes.get(j).y + eyes.get(j).height);
+                            cv.rectangle(roiSrc, point1, point2, [0, 0, 255, 255]);
+                        }
+                        roiGray.delete(); roiSrc.delete();
+                    }
+                    cv.imshow(processed, src);
+                    src.delete(); gray.delete(); faceCascade.delete();
+                    eyeCascade.delete(); faces.delete(); eyes.delete();
+
+
+                };
+
+                function handleSuccess(stream) {
+                    video.srcObject = stream;
+                };
+
+                function handleError(error) {
+                    console.log(error);
+                    alert(error);
+                };
+                function hasGetUserMedia() {
+                    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+                };
+                console.log("ready!");
+                navigator.mediaDevices.getUserMedia(constraints).
+                    then(handleSuccess).catch(function (error) { console.log(error) });
+
+
+
+            })()
+        )
+        function opencvIsReady() {
+            console.log('OpenCV.js is ready');
+        }
+        ;
+
+    </script> {% endblock %}

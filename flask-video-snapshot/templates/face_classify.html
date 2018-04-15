@@ -1,0 +1,105 @@
+{% extends "layout.html" %} {% block body %}
+<!--reference: https://www.html5rocks.com/en/tutorials/getusermedia/intro/ -->
+<div class='content-grid mdl-grid' justify-content='center'>
+    <div id='webcam' class="rectangle-card content-column mdl-card mdl-cell mdl-cell--3-col mdl-cell--2-col-tablet mdl-shadow--2dp">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text mdl-color-text--light-blue-900">Live Feed</h2>
+        </div>
+        <div class='mdl-card__media'>
+            <video id="screenshot-video" class="videostream" autoplay></video>
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+            <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" id="screenshot-button">Take screenshot</button>
+        </div>
+        <div class="mdl-card__supporting-text">
+            <canvas id='canvas-element' style="display:none;"></canvas>
+            <p id='status'></p>
+        </div>
+
+    </div>
+
+    <div id='output_screenshot' class="square-card content-column mdl-card mdl-cell mdl-cell--3-col mdl-cell--2-col-tablet mdl-shadow--2dp">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text mdl-color-text--light-blue-900">Screenshot</h2>
+        </div>
+        <div class='mdl-card__media'>
+        <img id="screenshot-img" src="">
+        </div>
+    </div>
+    <div id='output_processed' class="square-card content-column mdl-card mdl-cell mdl-cell--4-col mdl-cell--2-col-tablet mdl-shadow--2dp">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text mdl-color-text--light-blue-900">Processed</h2>
+        </div>
+        <div class='mdl-card__media'>
+        <img id="processed-img" src=""></img>
+ 
+    </div>
+
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+    ///set up video and controls///
+    $(document).ready(
+        
+        (function () {
+        const button = document.querySelector('#screenshot-button');
+        const img = document.querySelector('#screenshot-img');
+        const video = document.querySelector('#screenshot-video');
+        const processed = document.querySelector('#processed-img');
+
+        const canvas = document.querySelector('#canvas-element');
+
+        var constraints = {
+            video: true
+        };
+
+        button.onclick = video.onclick = function () {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            // Other browsers will fall back to image/png
+            img.src = canvas.toDataURL('image/png');
+            console.log(canvas.toDataURL('image/png'));
+            let dataURL = canvas.toDataURL('image/png');
+            stream_image(dataURL);
+        };
+
+        function handleSuccess(stream) {
+            video.srcObject = stream;
+        };
+
+        function handleError(error) {
+            console.log(error);
+            alert(error);
+        };
+        function hasGetUserMedia() {
+            return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+        };
+        console.log("ready!");
+        navigator.mediaDevices.getUserMedia(constraints).
+            then(handleSuccess).catch(function(error){console.log(error)});
+    
+
+    const status = document.querySelector('#status');
+    function stream_image(img_string) {
+        $.ajax({
+            type: 'POST',
+            url: "{{ url_for('classify') }}",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ "img": img_string }),
+            success: function (data) {
+                ///status.innerHTML = data;
+                console.log(data)
+                processed.src = 'data:image/png;base64,' + data
+            },
+            error: function (error) {
+                alert(error);
+                console.log(error)
+            }
+        })
+    };
+    })()
+    );
+
+</script> {% endblock %}

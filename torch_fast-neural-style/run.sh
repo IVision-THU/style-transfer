@@ -1,0 +1,1 @@
+th fast_neural_style.lua -model models/eccv16/starry_night.t7 -input_image /home/zhouxx/style-transfer/flask-video-snapshot/src.jpg -output_image /home/zhouxx/style-transfer/flask-video-snapshot/out.png -gpu 1

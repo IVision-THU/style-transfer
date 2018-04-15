@@ -1,0 +1,64 @@
+{% extends "layout.html" %} {% block body %}
+
+  <meta charset="UTF-8" />
+  <title>TEST</title>
+  <style>
+  #message { font-weight: bold; }
+  </style>
+  <script>
+  setInterval( checkPageFocus, 200 );
+  
+  function checkPageFocus() {
+    var info = document.getElementById("message");
+  
+    if ( document.hasFocus() ) {
+      focusPost();
+    } else {
+      losePost();
+    }
+  }
+  
+  function focusPost() {
+    $.ajax({
+            type: 'POST',
+            url: "{{ url_for('focus') }}",
+            success: function (data) {
+                ///status.innerHTML = data;
+                console.log(data)
+                document.body.style.backgroundColor = "green";
+                document.getElementById("message").innerHTML = data;
+            },
+            error: function (error) {
+                alert(error);
+                console.log(error)
+            }
+        })
+  };
+  function losePost(){
+    $.ajax({
+            type: 'GET',
+            url: "{{ url_for('focus') }}",
+            success: function (data) {
+                ///status.innerHTML = data;
+                console.log(data)
+                if( data == 'dead'){
+                  document.body.style.backgroundColor = "red";
+                  document.getElementById("message").innerHTML = data;
+                }else{
+                document.getElementById("message").innerHTML = data;
+                };
+            },
+            error: function (error) {
+                alert(error);
+                console.log(error)
+            }
+        })
+  }
+  </script>
+  <body>
+    <h1>JavaScript hasFocus example</h1>
+    <div id="message">Hello</div>
+
+  </body>
+
+{% endblock %}
