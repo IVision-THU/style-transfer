@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request
-from app import app
+from .app import app
 import re
 # from pixel_image import pixelate_image, generate_pixel_image, classify_face, atkinson_dither
-from pixel_image import generate_pixel_image, classify_face, atkinson_dither
-from style_transfer import transfer_image
+from .pixel_image import generate_pixel_image, classify_face, atkinson_dither
+from .style_transfer import transfer_image
 from PIL import Image, ImageChops, ImageOps
 import base64
 from io import BytesIO
@@ -21,12 +21,9 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision import transforms
 
-lib_path = os.path.abspath("/home/zhouxx/style-transfer/pytorch_fast-neural-style/neural_style")
-sys.path.append(lib_path)
-import utils
-from transformer_net import TransformerNet
-from vgg16 import Vgg16
-
+import style_transfer_tools.utils as utils
+from style_transfer_tools.transformer_net import TransformerNet
+from style_transfer_tools.vgg16 import Vgg16
 
 USE_CUDA = True
 style_model = TransformerNet()
@@ -90,6 +87,7 @@ def test():
 def test2():
     return render_template('testpage_2.html')
 
+
 @app.route('/focus', methods=['POST','GET'])
 def focus():
     if request.method == 'POST':
@@ -102,7 +100,6 @@ def focus():
     if len(hex_list) == 0:
         hex_string = 'dead'
     return hex_string
-
 
 
 @app.route('/process', methods=['POST'])
