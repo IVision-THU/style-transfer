@@ -108,3 +108,4 @@ venv.bak/
 .idea
 flask-video-snapshot/data
 tornado-supported-webapp/Backend/media
+tornado-supported-webapp/Backend/configs/servers.yml
