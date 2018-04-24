@@ -1,0 +1,68 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+}
+
+#full-container {
+    width: 100%;
+    height: 100%;
+    background: url("/data/bg.jpg") center no-repeat;
+    -webkit-background-size: cover;
+    background-size: cover;
+
+    overflow: hidden;
+}
+
+#image-panel {
+    width: 1124px;
+    height: 512px;
+    margin: 0 auto 0 auto;
+    padding-top: 190px;
+}
+
+#input-image {
+    float: left;
+    width: 512px;
+    height: 512px;
+}
+
+#output-image {
+    float: right;
+    width: 512px;
+    height: 512px;
+    border: solid 4px white;
+}
+
+#input-camera {
+    border: solid 4px white;
+}
+
+.io-img {
+    width: 100%;
+    height: 100%;
+}
+
+#claim {
+    width: 100%;
+    margin-top: 100px;
+}
+
+#logo {
+    width: 173px;
+    height: 173px;
+    margin: 0 auto 0 auto;
+}
+
+#logo img {
+    width: 100%;
+    height: 100%;
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>IVision - Style Transfer</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script type="text/javascript" src="js/lib/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/capture-video-frame.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+</head>
+<body>
+    <div id="full-container">
+        <div id="image-panel">
+            <div id="input-image">
+                <!--<img src="/data/input.jpg" class="io-img" alt="Input Image">-->
+                <video id="input-camera" class="io-img" autoplay muted></video>
+            </div>
+            <div id="output-image">
+                <img src="/data/output.jpg" class="io-img" alt="Output Image">
+            </div>
+        </div>
+        <div id="claim">
+            <div id="logo">
+                <img src="/data/logo.png" alt="logo">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

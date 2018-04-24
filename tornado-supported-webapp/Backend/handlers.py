@@ -1,5 +1,6 @@
 import os
 import json
+import base64
 
 import concurrent.futures
 from io import BytesIO
@@ -84,6 +85,9 @@ class ImageRealtimeStyleTransferHandler(BaseHandler):
         self.set_header("Content-Type", "image/jpeg")
         self.set_header("Refresh", "1")
         self.set_header("content-transfer-encoding", "binary")
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header("Access-Control-Allow-Methods", "POST, GET")
         output_data = BytesIO()
         output_image.save(output_data, format="JPEG")
-        self.write(output_data.getvalue())
+        self.write(base64.b64encode(output_data.getvalue()))
