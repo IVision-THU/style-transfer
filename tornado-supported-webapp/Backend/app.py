@@ -8,7 +8,7 @@ from style_transfer import load_model
 
 class Application(tornado.web.Application):
 
-    def __init__(self):
+    def __init__(self, options):
         route_table = [
             URLSpec(r"/", HomeHandler, name="home"),
             URLSpec(r"/style-transfer", ImageStyleTransferHandler, name="style-transfer"),
@@ -20,4 +20,7 @@ class Application(tornado.web.Application):
             "template_path": os.path.join(os.path.dirname(__file__), "templates")
         }
         super(Application, self).__init__(handlers=route_table, **settings)
-        self.style_transfer_model = load_model(False)
+        self.use_cuda = options.cuda
+        if self.use_cuda:
+            print("Using cuda for style transfer!")
+        self.style_transfer_model = load_model(self.use_cuda)

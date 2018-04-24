@@ -7,7 +7,6 @@ import numpy as np
 from PIL import Image
 from style_transfer_tools.transformer_net import TransformerNet
 
-USE_CUDA = False
 MEDIA_URL = "/media"
 MEDIA_ROOT = os.path.join(os.path.abspath(os.path.dirname(__file__)), "media")
 
@@ -36,17 +35,17 @@ def style_transfer_from_file(style_model, filename="data/input.jpg"):
     style_tranfer(style_model, img)
 
 
-def style_tranfer(style_model, img, save_to_file=True):
+def style_tranfer(style_model, img, use_cuda):
     img = img.convert('RGB')
     img = np.array(img).transpose(2, 0, 1)
     img = torch.from_numpy(img).float()
     content_image = img.unsqueeze(0)
-    if USE_CUDA:
+    if use_cuda:
         content_image = content_image.cuda()
 
     output = style_model(content_image)
     output = output.data[0]
-    if USE_CUDA:
+    if use_cuda:
         img = output.clone().cpu().clamp(0, 255).numpy()
     else:
         img = output.clone().clamp(0, 255).numpy()
@@ -55,10 +54,10 @@ def style_tranfer(style_model, img, save_to_file=True):
     return img
 
 
-def handle_input_image(style_model, img, save_to_file=True):
+def handle_input_image(style_model, img, use_cuda, save_to_file=True):
     width, height = img.size
     start = time.time()
-    img = style_tranfer(style_model, img, save_to_file)
+    img = style_tranfer(style_model, img, use_cuda)
     process_time = time.time() - start
 
     res = {"process_time": process_time}

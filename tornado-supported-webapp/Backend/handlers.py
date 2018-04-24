@@ -20,6 +20,10 @@ class BaseHandler(tornado.web.RequestHandler):
     def model(self):
         return self.application.style_transfer_model
 
+    @property
+    def use_cuda(self):
+        return self.application.use_cuda
+
     def write_json(self, data):
         self.write(json.dumps(data))
 
@@ -47,6 +51,7 @@ class ImageStyleTransferHandler(BaseHandler):
             handle_input_image,
             self.model,
             input_im,
+            self.use_cuda,
             True
         )
         response_json = yield self.future
@@ -73,6 +78,7 @@ class ImageRealtimeStyleTransferHandler(BaseHandler):
             handle_input_image,
             self.model,
             input_im,
+            self.use_cuda,
             False
         )
         self.set_header("Content-Type", "image/jpeg")
