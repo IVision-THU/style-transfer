@@ -1,5 +1,5 @@
 
-
+let host = "http://166.111.17.71:8000";
 
 function hide_logo_show_function_panel() {
     let switchDuration = 3000;
@@ -13,17 +13,15 @@ function upload_image(blob) {
     let formData = new FormData();
     formData.append("content-image", blob, "content-image.jpeg");
     $.ajax({
-        url: "http://166.111.17.71:8000/style-transfer",
+        url: host + "/style-transfer",
         method: "POST",
         data: formData,
         processData: false,
         contentType: false,
         cache: false,
         success: function (data) {
-            // document.getElementById("display-img").src =
-            //     "data:image/jpeg;base64," + data;
             data = $.parseJSON(data);
-            document.getElementById("display-img").src = "http://166.111.17.71:8000" + data["image_url"];
+            document.getElementById("display-img").src = host + data["image_url"];
             $("#render-time > i").text(data["process_time"] + "s");
 
             let btn = $("#take-photo");

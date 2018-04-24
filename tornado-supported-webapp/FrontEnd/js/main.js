@@ -28,12 +28,6 @@ function upload_image() {
         success: function (data) {
             $("#output-image > img").get(0).src =
                 "data:image/jpeg;base64," + data;
-            // let interval = Date.now() - last_upload_time;
-            // if (interval < 50) {
-            //     setTimeout(upload_image, 50 - interval);
-            // } else {
-            //     upload_image()
-            // }
             upload_image()
         }
     });
@@ -60,8 +54,6 @@ function config_camera() {
 $(document).ready(function() {
     adjust_layout();
     $(window).resize(adjust_layout);
-    this.last_upload_time = Date.now();
-    this.keep_uploading = true;
     config_camera();
 });
 

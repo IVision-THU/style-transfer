@@ -36,7 +36,7 @@ def style_transfer_from_file(style_model, filename="data/input.jpg"):
 
 
 def resize_image(img):
-    if img.width > 1920 or img.height > 1920:
+    if img.width > 1000 or img.height > 100:
         if img.width > img.height:
             scale = 1000 / img.width
         else:
@@ -73,7 +73,6 @@ def handle_input_image(style_model, img, use_cuda, save_to_file=True):
     res = {"process_time": "%.3f" % process_time}
     if save_to_file:
         saved_file_name = generate_export_file_name()
-        print(MEDIA_ROOT, saved_file_name)
         img.save("{}/{}".format(MEDIA_ROOT, saved_file_name))
         res["image_url"] = "{}/{}".format(MEDIA_URL, saved_file_name)
         return res
