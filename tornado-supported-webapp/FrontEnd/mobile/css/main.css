@@ -1,0 +1,121 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+}
+
+#full-container {
+    width: 100%;
+    height: 100%;
+    background: url("/data/mobile-bg.jpg") center no-repeat;
+    -webkit-background-size: cover;
+    background-size: cover;
+
+    overflow: hidden;
+    position: relative;
+}
+
+#welcome-panel {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+
+#welcome-panel img {
+    width: 200pt;
+    height: 200pt;
+    margin: 175pt auto 0 auto;
+    display: block;
+}
+
+#welcome-panel h3 {
+    font-size: 2em;
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+    text-align: center;
+    display: block;
+    margin-top: 36pt;
+    width: 100%;
+    color: white;
+}
+
+#function-area {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 1000;
+    opacity: 0;
+}
+
+.square-image-wrapper {
+    width: 100%;
+    padding-top: 100%;
+    position: relative;
+    margin-top: 110pt;
+}
+
+._square-image-wrapper {
+    margin: 0 30pt 0 30pt;
+}
+
+.square-image-wrapper img {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    object-fit: cover;
+    /*box-sizing: border-box;*/
+    /*-moz-box-sizing: border-box;*/
+    /*-webkit-box-sizing: border-box;*/
+}
+
+#display-img {
+    width: 100%;
+    height: 100%;
+    /*padding: 30pt;*/
+    border: solid 3px white;
+}
+
+/*#display-panel  {*/
+    /*width: 100%;*/
+    /*margin: 100pt 30pt 0 30pt;*/
+    /*position: absolute;*/
+/*}*/
+
+#display-panel h3 {
+    font-size: 2em;
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+    text-align: center;
+    display: block;
+    margin-top: 36pt;
+    width: 100%;
+    color: white;
+}
+
+button#take-photo {
+    width: 100pt;
+    height: 100pt;
+    position: absolute;
+    bottom: 100pt;
+    left: 50%;
+    margin-left: -50pt;
+    background: transparent;
+    border: none;
+}
+
+button#take-photo img {
+    width: 100%;
+    height: 100%;
+}

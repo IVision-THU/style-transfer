@@ -35,7 +35,18 @@ def style_transfer_from_file(style_model, filename="data/input.jpg"):
     style_tranfer(style_model, img)
 
 
+def resize_image(img):
+    if img.width > 1920 or img.height > 1920:
+        if img.width > img.height:
+            scale = 1000 / img.width
+        else:
+            scale = 1000 / img.height
+        return img.resize((int(img.width * scale), int(img.height * scale)))
+    return img
+
+
 def style_tranfer(style_model, img, use_cuda):
+    img = resize_image(img)
     img = img.convert('RGB')
     img = np.array(img).transpose(2, 0, 1)
     img = torch.from_numpy(img).float()
@@ -55,14 +66,14 @@ def style_tranfer(style_model, img, use_cuda):
 
 
 def handle_input_image(style_model, img, use_cuda, save_to_file=True):
-    width, height = img.size
     start = time.time()
     img = style_tranfer(style_model, img, use_cuda)
     process_time = time.time() - start
 
-    res = {"process_time": process_time}
+    res = {"process_time": "%.3f" % process_time}
     if save_to_file:
         saved_file_name = generate_export_file_name()
+        print(MEDIA_ROOT, saved_file_name)
         img.save("{}/{}".format(MEDIA_ROOT, saved_file_name))
         res["image_url"] = "{}/{}".format(MEDIA_URL, saved_file_name)
         return res

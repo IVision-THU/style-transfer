@@ -55,6 +55,9 @@ class ImageStyleTransferHandler(BaseHandler):
             self.use_cuda,
             True
         )
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header("Access-Control-Allow-Methods", "POST, GET")
         response_json = yield self.future
         self.write(json.dumps(response_json))
 
