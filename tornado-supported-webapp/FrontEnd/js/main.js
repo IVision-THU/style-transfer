@@ -16,7 +16,7 @@ function upload_image() {
     let frame = captureVideoFrame("input-camera", 'jpeg');
     let formData = new FormData();
     formData.append("content-image", frame.blob, "content-image.jpeg");
-    let last_upload_time = Date.now()
+    let last_upload_time = Date.now();
 
     $.ajax({
         url: "http://166.111.17.71:8000/style-transfer-realtime",
@@ -26,7 +26,6 @@ function upload_image() {
         contentType: false,
         cache: false,
         success: function (data) {
-            console.log(data);
             $("#output-image > img").get(0).src =
                 "data:image/jpeg;base64," + data;
             // let interval = Date.now() - last_upload_time;
@@ -35,10 +34,9 @@ function upload_image() {
             // } else {
             //     upload_image()
             // }
-            // upload_image()
+            upload_image()
         }
     });
-    setTimeout(upload_image, 40);
 }
 
 function config_camera() {

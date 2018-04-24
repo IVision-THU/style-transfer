@@ -61,7 +61,6 @@ def handle_input_image(style_model, img, use_cuda, save_to_file=True):
     process_time = time.time() - start
 
     res = {"process_time": process_time}
-    res.update({"image_width": width, "image_height": height})
     if save_to_file:
         saved_file_name = generate_export_file_name()
         img.save("{}/{}".format(MEDIA_ROOT, saved_file_name))
