@@ -15,7 +15,7 @@ body {
 #full-container {
     width: 100%;
     height: 100%;
-    background: url("/static/data/mobile-bg.jpg") center no-repeat;
+    background: url("/static/data/mosaic-mobile-bg.jpg") center no-repeat;
     -webkit-background-size: cover;
     background-size: cover;
 
@@ -102,6 +102,11 @@ body {
     margin-top: 36pt;
     width: 100%;
     color: white;
+}
+
+#style-name {
+    margin-top: 24pt;
+    font-size: 3em;
 }
 
 button#take-photo {

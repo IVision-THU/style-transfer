@@ -24,7 +24,7 @@ def load_models(use_cuda, gpu_idx=-1):
     model_dir = os.path.join(
         proj_root_dir, "pytorch_fast-neural-style", "saved-models")
     style_models = {}
-    for model_name in["mosaic", "candy", "starry-night", "udnie"]:
+    for model_name in ["mosaic", "candy", "starry-night", "udnie"]:
         style_model = TransformerNet()
         style_model_state_dict_dir = os.path.join(model_dir, "%s.pth" % model_name)
         style_model.load_state_dict(torch.load(style_model_state_dict_dir))

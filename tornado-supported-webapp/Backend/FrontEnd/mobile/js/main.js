@@ -1,5 +1,7 @@
 
 let host = "";
+let supported_style = ["mosaic", "candy", "starry-night", "udnie"];
+var cur_style = 0;
 
 function hide_logo_show_function_panel() {
     let switchDuration = 3000;
@@ -12,6 +14,7 @@ function hide_logo_show_function_panel() {
 function upload_image(blob) {
     let formData = new FormData();
     formData.append("content-image", blob, "content-image.jpeg");
+    formData.append("model-name", supported_style[cur_style]);
     $("#render-time > i").text("uploading");
     $.ajax({
         url: host + "/style-transfer",
@@ -58,9 +61,24 @@ function config_camera() {
     });
 }
 
+function switchStyle() {
+    cur_style =(cur_style + 1) % supported_style.length;
+    let cover_url = "/static/data/" + supported_style[cur_style] + "-mobile-bg.jpg";
+    document.getElementById("full-container").style.backgroundImage
+        = "url('" + cover_url + "')";
+    $("#style-name").text(supported_style[cur_style])
+}
+
 function do_init() {
     hide_logo_show_function_panel();
     config_camera();
+
+    $("#display-img").click(function (e) {
+        let btn = $("#take-photo");
+        if (!btn.prop("disabled")) {
+            switchStyle();
+        }
+    });
 }
 
 
