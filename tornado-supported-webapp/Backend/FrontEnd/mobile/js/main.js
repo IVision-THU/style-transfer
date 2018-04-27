@@ -58,6 +58,14 @@ function config_camera() {
         btn.prop("disabled", true);
         btn.css("opacity", 0.2);
         uploader.click();
+        document.body.onfocus = function () {
+            document.body.onfocus = null;
+            if (uploader.value.length === 0) {
+                let btn = $("#take-photo");
+                btn.prop("disabled", false);
+                btn.css("opacity", 1);
+            }
+        }
     });
 }
 
