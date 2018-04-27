@@ -8,15 +8,17 @@
     <script type="text/javascript" src="/static/js/lib/capture-video-frame.js"></script>
     <script type="text/javascript" src="/static/js/main.js"></script>
 </head>
-<body>
+<body bgcolor="white">
     <div id="full-container">
         <div id="image-panel">
             <div id="input-image">
                 <!--<img src="/data/input.jpg" class="io-img" alt="Input Image">-->
                 <video id="input-camera" class="io-img mirror" autoplay muted></video>
+                <h3 class="instruction">Loading Camera</h3>
             </div>
             <div id="output-image">
-                <img src="/static/data/output.jpg" class="io-img mirror" alt="Output Image">
+                <img src="" class="io-img mirror" alt="Output Image">
+                <p class="instruction">Click output video to switch different styles</p>
             </div>
         </div>
         <div id="claim">

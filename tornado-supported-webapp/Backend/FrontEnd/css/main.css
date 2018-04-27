@@ -33,6 +33,23 @@ body {
     float: left;
     width: 512px;
     height: 512px;
+    position: relative;
+}
+
+.instruction {
+    font-size: 2em;
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+    text-align: center;
+    color: white;
+    position: absolute;
+    z-index: 1000;
+    display: block;
+}
+
+#input-image h3 {
+    top: 45%;
+    left: 0;
+    right: 0;
 }
 
 #output-image {
@@ -40,6 +57,14 @@ body {
     width: 512px;
     height: 512px;
     border: solid 4px white;
+    position: relative;
+}
+
+#output-image .instruction {
+    left: 10%;
+    right: 10%;
+    top: 45%;
+    font-size: 1.5em;
 }
 
 #input-camera {

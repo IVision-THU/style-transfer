@@ -1,4 +1,6 @@
 let host = "";
+let supported_style = ["mosaic", "candy", "starry-night", "udnie"];
+var cur_style = 0;
 
 function adjust_layout() {
     let height = $(window).height();
@@ -18,8 +20,7 @@ function upload_image() {
     let frame = captureVideoFrame("input-camera", 'jpeg');
     let formData = new FormData();
     formData.append("content-image", frame.blob, "content-image.jpeg");
-    let last_upload_time = Date.now();
-
+    formData.append("model-name", supported_style[cur_style]);
     $.ajax({
         url: host + "/style-transfer-realtime",
         method: "POST",
@@ -37,6 +38,10 @@ function upload_image() {
     });
 }
 
+function hideInstructions() {
+    $(".instruction").animate({opacity: 0}, 3000)
+}
+
 function config_camera() {
     let constraint = {
         audio: false,
@@ -48,6 +53,7 @@ function config_camera() {
         video.srcObject = stream;
         video.onloadedmetadata = function (e) {
             video.play();
+            hideInstructions();
             setTimeout(upload_image, 20);
         };
     }).catch(function (err) {
@@ -55,9 +61,17 @@ function config_camera() {
     })
 }
 
+function switchStyle() {
+    cur_style =(cur_style + 1) % supported_style.length;
+    let cover_url = "/static/data/" + supported_style[cur_style] + "-bg.jpg";
+    document.getElementById("full-container").style.backgroundImage
+        = "url('" + cover_url + "')";
+}
+
 $(document).ready(function() {
     adjust_layout();
     $(window).resize(adjust_layout);
     config_camera();
+    $("#output-image > img").click(switchStyle);
 });
 
