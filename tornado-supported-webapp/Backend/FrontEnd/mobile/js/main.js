@@ -12,6 +12,7 @@ function hide_logo_show_function_panel() {
 function upload_image(blob) {
     let formData = new FormData();
     formData.append("content-image", blob, "content-image.jpeg");
+    $("#render-time > i").text("uploading");
     $.ajax({
         url: host + "/style-transfer",
         method: "POST",
@@ -27,6 +28,9 @@ function upload_image(blob) {
             let btn = $("#take-photo");
             btn.prop("disabled", false);
             btn.css("opacity", 1);
+        },
+        error: function (e) {
+            $("#render-time > i").text("Error occurs");
         }
     });
 }
@@ -62,5 +66,5 @@ function do_init() {
 
 $(document).ready(function () {
     console.log("ready");
-    setTimeout(do_init(), 3000);
+    setTimeout(do_init, 2000);
 });
