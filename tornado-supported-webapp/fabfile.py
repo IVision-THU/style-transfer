@@ -25,8 +25,6 @@ def _load_server_settings():
         server_settings["env_root"] = server_config.get("env_root", None)
         server_settings["backend_proj_root"] = os.path.join(
             server_settings["project_root"], "style-transfer/tornado-supported-webapp/Backend")
-        server_settings["frontend_proj_root"] = os.path.join(
-            server_settings["project_root"], "style-transfer/tornado-supported-webapp/Frontend")
         return server_settings
     else:
         print("%s not found" % local_server_config_path)
@@ -80,6 +78,19 @@ def _process_configs_files(settings, env_root):
         run("chmod u+x ./process.py && ./process.py")
 
 
+def _create_index_html_link(settings):
+    backend_root = settings["backend_proj_root"]
+    with cd(backend_root):
+        run("ln -f -s {} {}".format(
+            os.path.join(backend_root, "FrontEnd/index.html"),
+            os.path.join(backend_root, "templates/index.html")
+        ))
+        run("ln -f -s {} {}".format(
+            os.path.join(backend_root, "FrontEnd/index-mobile.html"),
+            os.path.join(backend_root, "templates/index-mobile.html")
+        ))
+
+
 def deploy():
     if settings is None:
         return
@@ -94,6 +105,7 @@ def deploy():
         return
     _create_env_link_for_model_tools(settings, env_root)
     _process_configs_files(settings, env_root)
+    _create_index_html_link(settings)
     with cd(settings["backend_proj_root"]):
         run("chmod u+x ./run.sh")
         run("./run.sh")

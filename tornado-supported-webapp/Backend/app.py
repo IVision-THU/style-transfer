@@ -4,7 +4,9 @@ import tornado.web
 from tornado.web import URLSpec
 
 from handlers import ImageStyleTransferHandler, HomeHandler, ImageRealtimeStyleTransferHandler
+from handlers import MobileHomeHandler
 from style_transfer import load_model
+
 
 class Application(tornado.web.Application):
 
@@ -12,13 +14,13 @@ class Application(tornado.web.Application):
         route_table = [
             (r'/media/(.*)', tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), "media")}),
             URLSpec(r"/", HomeHandler, name="home"),
+            URLSpec(r"/mobile", MobileHomeHandler, name="mobile-home"),
             URLSpec(r"/style-transfer", ImageStyleTransferHandler, name="style-transfer"),
-            URLSpec(r"/style-transfer-realtime", ImageRealtimeStyleTransferHandler, name="real-time")
-
+            URLSpec(r"/style-transfer-realtime", ImageRealtimeStyleTransferHandler, name="real-time"),
         ]
         settings = {
             "autoreload": True,
-            "static_path": os.path.join(os.path.dirname(__file__), "static"),
+            "static_path": os.path.join(os.path.dirname(__file__), "FrontEnd"),
             "template_path": os.path.join(os.path.dirname(__file__), "templates")
         }
         super(Application, self).__init__(handlers=route_table, **settings)
@@ -26,3 +28,4 @@ class Application(tornado.web.Application):
         if self.use_cuda:
             print("Using cuda for style transfer!")
         self.style_transfer_model = load_model(self.use_cuda)
+        print("Model loaded")

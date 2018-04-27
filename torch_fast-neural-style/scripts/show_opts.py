@@ -12,7 +12,7 @@ def main(args):
   with open(args.checkpoint, 'r') as f:
     opts = json.load(f)['opt']
   for k, v in sorted(opts.iteritems()):
-    print k, v
+    print(k, v)
 
 
 if __name__ == '__main__':

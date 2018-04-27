@@ -32,7 +32,13 @@ class BaseHandler(tornado.web.RequestHandler):
 class HomeHandler(BaseHandler):
 
     def get(self, *args, **kwargs):
-        self.write("Presented by IVision\n")
+        self.render("index.html")
+
+
+class MobileHomeHandler(BaseHandler):
+
+    def get(self, *args, **kwargs):
+        self.render("index-mobile.html")
 
 
 class ImageStyleTransferHandler(BaseHandler):

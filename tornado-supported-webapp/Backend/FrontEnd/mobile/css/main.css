@@ -15,7 +15,7 @@ body {
 #full-container {
     width: 100%;
     height: 100%;
-    background: url("/data/mobile-bg.jpg") center no-repeat;
+    background: url("/static/data/mobile-bg.jpg") center no-repeat;
     -webkit-background-size: cover;
     background-size: cover;
 
