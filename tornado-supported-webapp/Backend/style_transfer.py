@@ -18,16 +18,23 @@ def generate_export_file_name(filename=None, ext="jpg"):
     return "%s.%s" % (random_file_name, ext)
 
 
-def load_model(use_cuda):
-    style_model = TransformerNet()
+def load_models(use_cuda, gpu_idx=-1):
     proj_root_dir = os.path.dirname(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    style_model_state_dict_dir = os.path.join(
-        proj_root_dir, "pytorch_fast-neural-style", "saved-models", "mosaic.pth")
-    style_model.load_state_dict(torch.load(style_model_state_dict_dir))
-    if use_cuda:
-        style_model.cuda()
-    return style_model
+    model_dir = os.path.join(
+        proj_root_dir, "pytorch_fast-neural-style", "saved-models")
+    style_models = {}
+    for model_name in["mosaic", "candy", "starry-night", "udnie"]:
+        style_model = TransformerNet()
+        style_model_state_dict_dir = os.path.join(model_dir, "%s.pth" % model_name)
+        style_model.load_state_dict(torch.load(style_model_state_dict_dir))
+        if use_cuda:
+            if gpu_idx >= 0:
+                style_model.cuda(gpu_idx)
+            else:
+                style_model.cuda()
+        style_models[model_name] = style_model
+    return style_models
 
 
 def style_transfer_from_file(style_model, filename="data/input.jpg"):
@@ -36,7 +43,7 @@ def style_transfer_from_file(style_model, filename="data/input.jpg"):
 
 
 def resize_image(img):
-    if img.width > 1000 or img.height > 100:
+    if img.width > 1000 or img.height > 1000:
         if img.width > img.height:
             scale = 1000 / img.width
         else:
@@ -45,14 +52,17 @@ def resize_image(img):
     return img
 
 
-def style_tranfer(style_model, img, use_cuda):
+def style_tranfer(style_model, img, use_cuda, gpu_idx):
     img = resize_image(img)
     img = img.convert('RGB')
     img = np.array(img).transpose(2, 0, 1)
     img = torch.from_numpy(img).float()
     content_image = img.unsqueeze(0)
     if use_cuda:
-        content_image = content_image.cuda()
+        if gpu_idx >= 0:
+            content_image = content_image.cuda(gpu_idx)
+        else:
+            content_image = content_image.cuda()
 
     output = style_model(content_image)
     output = output.data[0]
@@ -65,12 +75,16 @@ def style_tranfer(style_model, img, use_cuda):
     return img
 
 
-def handle_input_image(style_model, img, use_cuda, save_to_file=True):
+def handle_input_image(style_model, img, use_cuda, gpu_idx, save_to_file=True):
     start = time.time()
-    img = style_tranfer(style_model, img, use_cuda)
+    img = style_tranfer(style_model, img, use_cuda, gpu_idx)
     process_time = time.time() - start
-
-    res = {"process_time": "%.3f" % process_time}
+    width, height = img.size
+    res = {
+        "process_time": "%.3f" % process_time,
+        "width": width,
+        "height": height
+    }
     if save_to_file:
         saved_file_name = generate_export_file_name()
         img.save("{}/{}".format(MEDIA_ROOT, saved_file_name))

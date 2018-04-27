@@ -5,7 +5,7 @@ from tornado.web import URLSpec
 
 from handlers import ImageStyleTransferHandler, HomeHandler, ImageRealtimeStyleTransferHandler
 from handlers import MobileHomeHandler
-from style_transfer import load_model
+from style_transfer import load_models
 
 
 class Application(tornado.web.Application):
@@ -25,7 +25,11 @@ class Application(tornado.web.Application):
         }
         super(Application, self).__init__(handlers=route_table, **settings)
         self.use_cuda = options.cuda
+        self.gpu_idx = options.gpu_idx
+
         if self.use_cuda:
             print("Using cuda for style transfer!")
-        self.style_transfer_model = load_model(self.use_cuda)
+            if self.gpu_idx >= 0:
+                print("Use GPU %s" % self.gpu_idx)
+        self.style_transfer_models = load_models(self.use_cuda, self.gpu_idx)
         print("Model loaded")

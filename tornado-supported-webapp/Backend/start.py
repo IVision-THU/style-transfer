@@ -9,6 +9,7 @@ from app import Application
 
 define("port", default=8000, help="run on given port", type=int)
 define("cuda", default=False, help="use cuda for style transfer", type=bool)
+define("gpu_idx", default=-1, help="select gpu to use", type=int)
 
 
 if __name__ == "__main__":

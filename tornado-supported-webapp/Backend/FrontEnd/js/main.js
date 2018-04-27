@@ -1,3 +1,5 @@
+let host = "";
+
 function adjust_layout() {
     let height = $(window).height();
     $("#full-container").css("height", Math.max(height.value, 1080).toString() + "px");
@@ -19,7 +21,7 @@ function upload_image() {
     let last_upload_time = Date.now();
 
     $.ajax({
-        url: "http://166.111.17.71:8000/style-transfer-realtime",
+        url: host + "/style-transfer-realtime",
         method: "POST",
         data: formData,
         processData: false,
@@ -28,6 +30,8 @@ function upload_image() {
         success: function (data) {
             $("#output-image > img").get(0).src =
                 "data:image/jpeg;base64," + data;
+        },
+        complete: function () {
             upload_image()
         }
     });

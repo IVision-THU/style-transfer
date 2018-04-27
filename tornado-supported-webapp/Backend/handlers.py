@@ -17,13 +17,16 @@ stylizer_pool = concurrent.futures.ThreadPoolExecutor(1)
 
 class BaseHandler(tornado.web.RequestHandler):
 
-    @property
-    def model(self):
-        return self.application.style_transfer_model
+    def get_model(self, model_name):
+        return self.application.style_transfer_models.get(model_name or "mosaic")
 
     @property
     def use_cuda(self):
         return self.application.use_cuda
+
+    @property
+    def gpu_idx(self):
+        return self.application.gpu_idx
 
     def write_json(self, data):
         self.write(json.dumps(data))
@@ -49,22 +52,29 @@ class ImageStyleTransferHandler(BaseHandler):
 
     @tornado.gen.coroutine
     def post(self):
+        model_name = self.get_argument("model-name", default="mosaic")
+        model = self.get_model(model_name)
+
         content_image = self.request.files.get("content-image", None)
         if content_image is None or len(content_image) == 0:
             return self.write_error(500)
         content_image = content_image[0]
         input_im = Image.open(BytesIO(content_image.body))
+
         self.future = stylizer_pool.submit(
             handle_input_image,
-            self.model,
+            model,
             input_im,
             self.use_cuda,
+            self.gpu_idx,
             True
         )
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
         self.set_header("Access-Control-Allow-Methods", "POST, GET")
         response_json = yield self.future
+        response_json["model-name"] = model_name
+
         self.write(json.dumps(response_json))
 
 
@@ -79,6 +89,8 @@ class ImageRealtimeStyleTransferHandler(BaseHandler):
         """
         returns images directly instead of json obj
         """
+        model_name = self.get_argument("model-name", default="mosaic")
+        model = self.get_model(model_name)
         content_image = self.request.files.get("content-image", None)
         if content_image is None or len(content_image) == 0:
             return self.write_error(500)
@@ -86,9 +98,10 @@ class ImageRealtimeStyleTransferHandler(BaseHandler):
         input_im = Image.open(BytesIO(content_image.body))
         output_image = yield stylizer_pool.submit(
             handle_input_image,
-            self.model,
+            model,
             input_im,
             self.use_cuda,
+            self.gpu_idx,
             False
         )
         self.set_header("Content-Type", "image/jpeg")

@@ -1,5 +1,5 @@
 
-let host = "http://166.111.17.71:8000";
+let host = "";
 
 function hide_logo_show_function_panel() {
     let switchDuration = 3000;
