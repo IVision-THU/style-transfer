@@ -89,6 +89,19 @@ body {
     border: solid 3px white;
 }
 
+#progress {
+    left: 0;
+    top: 0;
+    width: 0%;
+    position: absolute;
+    opacity: 0.5;
+    height: 100%;
+    background-color: gray;
+    z-index: 1000;
+    display: none;
+    border: solid 3px white;
+}
+
 /*#display-panel  {*/
     /*width: 100%;*/
     /*margin: 100pt 30pt 0 30pt;*/

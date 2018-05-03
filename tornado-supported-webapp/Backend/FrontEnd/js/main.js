@@ -21,6 +21,7 @@ function upload_image() {
     let formData = new FormData();
     formData.append("content-image", frame.blob, "content-image.jpeg");
     formData.append("model-name", supported_style[cur_style]);
+
     $.ajax({
         url: host + "/style-transfer-realtime",
         method: "POST",

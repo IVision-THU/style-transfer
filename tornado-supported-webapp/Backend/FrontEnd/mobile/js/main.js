@@ -16,6 +16,7 @@ function upload_image(blob) {
     formData.append("content-image", blob, "content-image.jpeg");
     formData.append("model-name", supported_style[cur_style]);
     $("#render-time > i").text("uploading");
+    $("#progress").css("display", "block");
     $.ajax({
         url: host + "/style-transfer",
         method: "POST",
@@ -33,7 +34,23 @@ function upload_image(blob) {
             btn.css("opacity", 1);
         },
         error: function (e) {
+            console.log(e);
             $("#render-time > i").text("Error occurs");
+        },
+        complete: function () {
+            let progressBar = $("#progress");
+            progressBar.css("width", "0");
+            progressBar.css("display", "none");
+        },
+        xhr: function () {
+            var xhr = $.ajaxSettings.xhr();
+            xhr.upload.onprogress = function (e) {
+                if (e.lengthComputable) {
+                    $("#progress").css("width", e.loaded / e.total * 100 + "%");
+                    console.log(e.loaded / e.total * 100);
+                }
+            };
+            return xhr;
         }
     });
 }
