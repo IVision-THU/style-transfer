@@ -57,5 +57,5 @@ chmod u+x tornado-supported-webapp/Backend/run.sh
 
 ### About SSL Certificate
 
-You need to put your SSL Certificate file at ``tornado-supported-webapp/Backend/configs/Certificates`  and name them `domain.crt` and `domain.key` respectively.
+You need to put your SSL Certificate file at `tornado-supported-webapp/Backend/configs/Certificates` and name them `domain.crt` and `domain.key` respectively.
 
