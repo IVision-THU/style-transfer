@@ -112,3 +112,4 @@ tornado-supported-webapp/Backend/configs/servers.yml
 tornado-supported-webapp/Backend/configs/Certificates
 tornado-supported-webapp/Backend/configs/supervisor.conf
 tornado-supported-webapp/Backend/configs/nginx.conf
+tornado-supported-webapp/Backend/FrontEnd/static

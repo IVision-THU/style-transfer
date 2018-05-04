@@ -21,6 +21,7 @@ def _load_server_settings():
         )]
         if "password" in server_config:
             env.password = server_config["password"]
+        server_settings["user"] = server_config["user"]
         server_settings["project_root"] = server_config["project_root"]
         server_settings["env_root"] = server_config.get("env_root", None)
         server_settings["backend_proj_root"] = os.path.join(
@@ -72,10 +73,11 @@ def _create_env_link_for_model_tools(settings, env_root):
 settings = _load_server_settings()
 
 
-def _process_configs_files(settings, env_root):
+def _process_configs_files(settings):
     backend_root = settings["backend_proj_root"]
     with cd(os.path.join(backend_root, "configs")):
-        run("chmod u+x ./process.py && ./process.py")
+        run("chmod u+x ./process.py && ./process.py --gpu_num %s --user %s" %
+            (settings["gpu_num"], settings["user"]))
 
 
 def _create_index_html_link(settings):
@@ -91,6 +93,18 @@ def _create_index_html_link(settings):
         ))
 
 
+def _get_number_of_gpus(settings):
+    settings["gpu_num"] = int(run("nvidia-smi -L | wc -l"))
+
+
+def _process_run_script(settings):
+    with open(os.path.join(BASE_DIR, "Backend", "run.sh"), "w") as f:
+        f.write("#!/usr/bin/env bash\n")
+        virtual_env_python = os.path.join(settings["env_root"], "bin/python3")
+        start_script_location = os.path.join(settings["backend_proj_root"], "start.py")
+        f.write('{} {} --cuda=true "$@"'.format(virtual_env_python, start_script_location))
+
+
 def deploy():
     if settings is None:
         return
@@ -104,8 +118,9 @@ def deploy():
     if env_root is None:
         return
     _create_env_link_for_model_tools(settings, env_root)
-    _process_configs_files(settings, env_root)
+    _get_number_of_gpus(settings)
+    _process_configs_files(settings)
     _create_index_html_link(settings)
+    _process_run_script(settings)
     with cd(settings["backend_proj_root"]):
         run("chmod u+x ./run.sh")
-        run("./run.sh")
