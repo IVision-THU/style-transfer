@@ -9,6 +9,8 @@ Presented by IVision
 
 ![QR Code for Mobile Clients](https://raw.githubusercontent.com/huangy10/style-transfer/master/images/qr.jpg)
 
+(For Wechat Users: 微信扫描二维码进入会显示该地址使用了非标准端口，继续访问将转换成手机预览模式。此时请点击下方访问原网页)
+
 ## Screenshot
 
 ![Screenshot of Desktop Client](https://raw.githubusercontent.com/huangy10/style-transfer/master/images/screenshot_desktop.png)
