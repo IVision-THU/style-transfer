@@ -7,13 +7,13 @@ Presented by IVision
 - PC Browser: https://ivision.vlionthu.com:2443
 - Phone: http://ivision.vlionthu.com:2080/mobile
 
-![QR Code for Mobile Clients](images/qr.jpg)
+![QR Code for Mobile Clients](https://raw.githubusercontent.com/huangy10/style-transfer/master/images/qr.jpg)
 
 ## Screenshot
 
-![Screenshot of Desktop Client](images/screenshot_desktop.png)
+![Screenshot of Desktop Client](https://raw.githubusercontent.com/huangy10/style-transfer/master/images/screenshot_desktop.png)
 
-![Screenshot of Mobile Client](images/screenshot_mobile.png)
+![Screenshot of Mobile Client](https://raw.githubusercontent.com/huangy10/style-transfer/master/images/screenshot_mobile.png)
 
 ## How to run this
 
